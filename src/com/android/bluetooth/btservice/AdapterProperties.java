@@ -41,6 +41,7 @@ import android.content.IntentFilter;
 import android.os.ParcelUuid;
 import android.os.SystemProperties;
 import android.os.UserHandle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 
@@ -809,6 +810,9 @@ class AdapterProperties {
                         break;
                     case AbstractionLayer.BT_PROPERTY_BDADDR:
                         mAddress = val;
+                        if (TextUtils.equals(SystemProperties.get("fde.fake_bluetooth_mac", "0"), "1")) {
+                            mAddress = Utils.getBytesFromAddress(SystemProperties.get("ro.boot.btmacaddr", "34:23:54:12:28:65"));
+                        }
                         String address = Utils.getAddressStringFromByte(mAddress);
                         debugLog("Address is:" + address);
                         intent = new Intent(BluetoothAdapter.ACTION_BLUETOOTH_ADDRESS_CHANGED);
